@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
-
-// Values
-const int GRID_CELL_SIZE = 50;
+#include <stdio.h>
+#include <stdbool.h>
 
 // Theme
 const SDL_Color COLOR_WHITE = { 255, 255, 255, 255 };
@@ -15,6 +14,8 @@ int sdl_cleanup(SDL_Window* window) {
     return 0;
 }
 
+const int WINDOW_SIZE = 600;
+
 int main(int argc, char* argv[])
 {
     if (argc - 1 < 2) {
@@ -22,14 +23,17 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    int grid_width = SDL_strtol(argv[1], NULL, 10);
-    int grid_height = SDL_strtol(argv[2], NULL, 10);
+    int grid_width = strtol(argv[1], NULL, 10);
+    int grid_height = strtol(argv[2], NULL, 10);
 
-    // + 1 so that the last grid lines fit in the screen
-    int window_width = (grid_width * GRID_CELL_SIZE) + 1;
-    int window_height = (grid_height * GRID_CELL_SIZE) + 1;
+    if (grid_width > 200 || grid_height > 200) {
+        printf("Grid width and height cannot be above 200.\n");
+        return 1;
+    }
 
-    // Place the grid cursor in the middle of the screen.
+    const int GRID_CELL_SIZE = WINDOW_SIZE / grid_width;
+
+    // Place the grid cursor in the middle of the grid.
     SDL_Rect grid_cursor = {
         .x = (grid_width - 1) / 2 * GRID_CELL_SIZE,
         .y = (grid_height - 1) / 2 * GRID_CELL_SIZE,
@@ -37,7 +41,7 @@ int main(int argc, char* argv[])
         .h = GRID_CELL_SIZE,
     };
 
-    SDL_Rect* highlighted_squares = SDL_malloc(grid_width * grid_height * sizeof(SDL_Rect));
+    SDL_Rect* highlighted_squares = malloc(grid_width * grid_height * sizeof(SDL_Rect));
     int highlighted_square_count = 0;
 
     // Todo: Failable
@@ -47,7 +51,7 @@ int main(int argc, char* argv[])
     SDL_Renderer *renderer;
 
     // Todo: Failable
-    SDL_CreateWindowAndRenderer(window_width, window_height, 0, &window, &renderer);
+    SDL_CreateWindowAndRenderer(WINDOW_SIZE, WINDOW_SIZE, 0, &window, &renderer);
     SDL_SetWindowTitle(window, "Percolation");
 
     if (window == NULL) {
@@ -55,8 +59,8 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_bool quit = SDL_FALSE;
-    SDL_bool mouse_clicked = SDL_FALSE;
+    bool quit = false;
+    bool mouse_clicked = false;
 
     while (!quit) {
         SDL_Event event;
@@ -68,10 +72,10 @@ int main(int argc, char* argv[])
 
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    mouse_clicked = SDL_TRUE;
+                    mouse_clicked = true;
                     break;
                 case SDL_QUIT:
-                    quit = SDL_TRUE;
+                    quit = true;
                     break;
             }
         }
@@ -92,18 +96,18 @@ int main(int argc, char* argv[])
         // Draw grid lines vertical
         SDL_SetRenderDrawColor(renderer, COLOR_BLACK.r, COLOR_BLACK.g, COLOR_BLACK.b, COLOR_BLACK.a);
         for (int x = 0; x < 1 + grid_width * GRID_CELL_SIZE; x += GRID_CELL_SIZE) {
-            SDL_RenderDrawLine(renderer, x, 0, x, window_height);
+            SDL_RenderDrawLine(renderer, x, 0, x, WINDOW_SIZE);
         }
 
         // Draw grid line horizontal
         for (int y = 0; y < 1 + grid_height * GRID_CELL_SIZE; y += GRID_CELL_SIZE) {
-            SDL_RenderDrawLine(renderer, 0, y, window_width, y);
+            SDL_RenderDrawLine(renderer, 0, y, WINDOW_SIZE, y);
         }
 
         SDL_RenderPresent(renderer);
-        mouse_clicked = SDL_FALSE;
+        mouse_clicked = false;
     }
 
-    SDL_free(highlighted_squares);
+    free(highlighted_squares);
     return sdl_cleanup(window);
 }
