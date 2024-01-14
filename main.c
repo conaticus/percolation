@@ -4,6 +4,7 @@
 #include "rendering.h"
 #include "percolation.h"
 
+// Todo: Test if it works with uneven dimensions. If it doesn't, error if the dimensions are not equal.
 void get_grid_dimensions(int argc, char* argv[], GridDimensions* grid_dimensions) {
     if (argc - 1 < 2) {
         printf("Please provide a width and height for the percolation graph.\n");

@@ -46,6 +46,11 @@ void sdl_draw_grid_outlines(GridDimensions* grid_dimensions, SDL_Renderer* rende
     }
 }
 
+void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect) {
+    sdl_set_color_white(renderer);
+    SDL_RenderFillRect(renderer, rect);
+}
+
 int sdl_cleanup(SDL_Window* window, SDL_Renderer* renderer) {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
