@@ -5,6 +5,10 @@
 #include "percolation.h"
 
 // Todo: Test if it works with uneven dimensions. If it doesn't, error if the dimensions are not equal.
+// Todo: Add a "mode" CLI option that allows for random holes to be poked (maybe time the interval based on the size of the grid)
+// Todo: Figure out the O notation lol
+// Todo: Fix rendering bug with black bar on right of screen
+
 void get_grid_dimensions(int argc, char* argv[], GridDimensions* grid_dimensions) {
     if (argc - 1 < 2) {
         printf("Please provide a width and height for the percolation graph.\n");

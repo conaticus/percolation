@@ -1,5 +1,4 @@
-GRID_WIDTH = 10
-GRID_HEIGHT = 10
+GRID_SIZE = 10
 
 TARGET = perco.exe
 CC = gcc
@@ -11,4 +10,4 @@ all:
 	$(CC) $(SRC) $(CLFAGS) $(LIBS) -o $(TARGET)
 
 run: 
-	./$(TARGET) $(GRID_WIDTH) $(GRID_HEIGHT)
+	./$(TARGET) $(GRID_SIZE) $(GRID_SIZE)
