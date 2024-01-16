@@ -51,6 +51,10 @@ void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect) {
     SDL_RenderFillRect(renderer, rect);
 }
 
+void sdl_messagebox_warning(SDL_Window* window, char* message) {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Percolation", message, window);
+}
+
 int sdl_cleanup(SDL_Window* window, SDL_Renderer* renderer) {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);

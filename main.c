@@ -8,6 +8,7 @@
 // Todo: Add a "mode" CLI option that allows for random holes to be poked (maybe time the interval based on the size of the grid)
 // Todo: Figure out the O notation lol
 // Todo: Fix rendering bug with black bar on right of screen
+// Todo: Remove quit variable, exit instead
 
 void get_grid_dimensions(int argc, char* argv[], GridDimensions* grid_dimensions) {
     if (argc - 1 < 2) {
@@ -43,7 +44,7 @@ int main(int argc, char* argv[])
     if (window == NULL || renderer == NULL)
         return -1;
 
-    run_simulation(&grid_dimensions, renderer);
+    run_simulation(&grid_dimensions, window, renderer);
 
     return sdl_cleanup(window, renderer);
 }
