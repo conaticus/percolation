@@ -51,9 +51,7 @@ bool is_index_bottom_row(int index, int grid_width, int grid_cell_count) {
     return index > (grid_cell_count - grid_width) - 1;
 }
 
-GridCell* populate_disjoint_set(int cell_count, int top_node_id, int bottom_node_id, GridDimensions* grid_dimensions) {
-    GridCell* grid_cells = malloc((cell_count + 2) * sizeof(GridCell));
-
+void populate_disjoint_set(GridCell* grid_cells, int cell_count, int top_node_id, int bottom_node_id, GridDimensions* grid_dimensions) {
     for (int i = 0; i < cell_count; i++) {
         int root = i;
 
@@ -88,11 +86,13 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
     // Disjoint-set data structure
     const int grid_cell_count = grid_dimensions->virtual_size * grid_dimensions->virtual_size;
 
+    // The last two elements are the virtual nodes at the top and bottom of the disjoint-set tree
+    GridCell* grid_cells = malloc((grid_cell_count + 2) * sizeof(GridCell));
     int top_node_id = grid_cell_count;
     int bottom_node_id = grid_cell_count + 1;
 
-    // The last two elements are the virtual nodes at the top and bottom of the disjoint-set tree
-    GridCell* grid_cells = populate_disjoint_set(
+    populate_disjoint_set(
+        grid_cells,
         grid_cell_count,
         top_node_id,
         bottom_node_id,
