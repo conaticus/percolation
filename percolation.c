@@ -5,6 +5,7 @@
 #include "rendering.h"
 
 #define BORDER_SIZE 1
+#define INVALID_CELL -1
 
 typedef struct {
     SDL_Rect rect;
@@ -80,6 +81,11 @@ void populate_disjoint_set(GridCell* grid_cells, int cell_count, int top_node_id
     grid_cells[bottom_node_id] = (GridCell) {.root = bottom_node_id, .rect = {0}};
 }
 
+void connect_neighbour(int neighbour_cell_index, int hovered_cell_index, GridCell* grid_cells) {
+    if (neighbour_cell_index != INVALID_CELL && grid_cells[neighbour_cell_index].is_open)
+        connect(grid_cells, neighbour_cell_index, hovered_cell_index);
+}
+
 void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
     Coordinates mouse_pos = { .x=0, .y=0 };
 
@@ -148,17 +154,10 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
         int top_cell = is_top_row ? INVALID : cell_index - grid_dimensions->virtual_size;
         int bottom_cell = is_bottom_row ? INVALID : cell_index + grid_dimensions->virtual_size;
 
-        if (left_cell != INVALID && grid_cells[left_cell].is_open)
-            connect(grid_cells, left_cell, cell_index);
-
-        if (right_cell != INVALID && grid_cells[right_cell].is_open)
-            connect(grid_cells, right_cell, cell_index);
-
-        if (top_cell != INVALID && grid_cells[top_cell].is_open)
-            connect(grid_cells, top_cell, cell_index);
-
-        if (bottom_cell != INVALID && grid_cells[bottom_cell].is_open)
-            connect(grid_cells, bottom_cell, cell_index);
+        connect_neighbour(left_cell, cell_index, grid_cells);
+        connect_neighbour(right_cell, cell_index, grid_cells);
+        connect_neighbour(top_cell, cell_index, grid_cells);
+        connect_neighbour(bottom_cell, cell_index, grid_cells);
 
         bool percolates = is_connected(grid_cells, top_node_id, bottom_node_id);
         if (percolates) {
