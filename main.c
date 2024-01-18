@@ -25,7 +25,7 @@ void get_grid_dimensions(int argc, char* argv[], GridDimensions* grid_dimensions
         return;
     }
 
-    grid_dimensions->cell_size = WINDOW_SIZE / grid_dimensions->width;
+    grid_dimensions->cell_size = (WINDOW_SIZE / grid_dimensions->width);
     grid_dimensions->is_valid = true;
 }
 

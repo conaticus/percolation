@@ -3,6 +3,7 @@
 #include "rendering.h"
 
 const int WINDOW_SIZE = 600;
+const int BORDER_SIZE = 1;
 
 // Theme
 const SDL_Color COLOR_WHITE = { 255, 255, 255, 255 };
@@ -30,20 +31,6 @@ void sdl_set_color_white(SDL_Renderer* renderer) {
 
 void sdl_set_color_black(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, COLOR_BLACK.r, COLOR_BLACK.g, COLOR_BLACK.b, COLOR_BLACK.a);
-}
-
-void sdl_draw_grid_outlines(GridDimensions* grid_dimensions, SDL_Renderer* renderer) {
-    sdl_set_color_black(renderer);
-
-    // Vertical
-    for (int x = 0; x < 1 + grid_dimensions->width * grid_dimensions->cell_size; x += grid_dimensions->cell_size) {
-        SDL_RenderDrawLine(renderer, x, 0, x, WINDOW_SIZE);
-    }
-
-    // Horizontal
-    for (int y = 0; y < 1 + grid_dimensions->height * grid_dimensions->cell_size; y += grid_dimensions->cell_size) {
-        SDL_RenderDrawLine(renderer, 0, y, WINDOW_SIZE, y);
-    }
 }
 
 void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect) {

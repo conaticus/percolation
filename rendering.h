@@ -19,7 +19,6 @@ void sdl_setup_window(SDL_Window** window, SDL_Renderer** renderer);
 
 void sdl_messagebox_warning(SDL_Window* window, char* message);
 void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect);
-void sdl_draw_grid_outlines(GridDimensions* grid_dimensions, SDL_Renderer* renderer);
 
 int sdl_cleanup(SDL_Window* window, SDL_Renderer* renderer);
 

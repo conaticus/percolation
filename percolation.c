@@ -4,11 +4,6 @@
 #include "percolation.h"
 #include "rendering.h"
 
-// These are virtual and will not be stored inside the union data structure
-// These save time complexity by being assigned to the parent of the top and bottom grid elements
-// #define TOP_NODE_ROOT -1
-// #define BOTTOM_NODE_ROOT -2
-
 #define BORDER_SIZE 1
 
 typedef struct {
@@ -17,9 +12,19 @@ typedef struct {
     bool is_open;
 } GridCell;
 
-int get_hovered_cell_index(SDL_Rect* grid_cursor, GridDimensions* grid_dimensions) {
-    // Todo: Maybe this calculation could be simplified by changing the values of grid_cursor?
-    return (grid_cursor->x / grid_dimensions->cell_size) + ((grid_cursor->y / grid_dimensions->cell_size) * grid_dimensions->width);
+typedef struct {
+    int x;
+    int y;
+} Coordinates;
+
+int max(int num, int max) {
+    return num > max ? max : num; 
+}
+
+int get_hovered_cell_index(Coordinates* mouse_pos, int cell_size, int grid_width) {
+    int cell_x = (mouse_pos->x - BORDER_SIZE) / cell_size;
+    int cell_y = (mouse_pos->y - BORDER_SIZE) / cell_size;
+    return (cell_y * grid_width) + cell_x;
 }
 
 int get_root(GridCell* grid_cells, int cid) {
@@ -47,13 +52,7 @@ bool is_index_bottom_row(int index, int grid_width, int grid_cell_count) {
 }
 
 void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
-    // Place the grid cursor in the middle of the grid.
-    SDL_Rect grid_cursor = {
-        .x = (grid_dimensions->width - BORDER_SIZE) / 2 * grid_dimensions->cell_size,
-        .y = (grid_dimensions->height - BORDER_SIZE) / 2 * grid_dimensions->cell_size,
-        .w = grid_dimensions->cell_size,
-        .h = grid_dimensions->cell_size,
-    };
+    Coordinates mouse_pos = { .x=0, .y=0 };
 
     // Disjoint-set data structure
     const int grid_cell_count = grid_dimensions->width * grid_dimensions->height;
@@ -79,10 +78,10 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
         // It's best not to ask
         int height_excess = i % grid_dimensions->height;
         grid_cell.rect = (SDL_Rect) {
-           .x = height_excess * grid_dimensions->cell_size,
-           .y = (((i - height_excess) / grid_dimensions->height) * grid_dimensions->cell_size),
+           .x = (height_excess * grid_dimensions->cell_size) + BORDER_SIZE,
+           .y = (((i - height_excess) / grid_dimensions->height) * grid_dimensions->cell_size) + BORDER_SIZE,
            .w = grid_dimensions->cell_size - BORDER_SIZE,
-           .h = grid_dimensions->cell_size - BORDER_SIZE,
+           .h = grid_dimensions->cell_size - BORDER_SIZE
         };
 
         grid_cells[i] = grid_cell;
@@ -90,8 +89,6 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
 
     grid_cells[top_node_id] = (GridCell) {.root = top_node_id, .rect = {0}};
     grid_cells[bottom_node_id] = (GridCell) {.root = bottom_node_id, .rect = {0}};
-
-    sdl_draw_grid_outlines(grid_dimensions, renderer);
 
     bool quit = false;
     bool mouse_down = false;
@@ -102,9 +99,8 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_MOUSEMOTION:
-                    // Todo: Fix bug where percolates if mouse goes to bottom edge of screen - likely to do with the grid outlines
-                    grid_cursor.x = (event.motion.x / grid_dimensions->cell_size) * grid_dimensions->cell_size;
-                    grid_cursor.y = (event.motion.y / grid_dimensions->cell_size) * grid_dimensions->cell_size;
+                    mouse_pos.x = max(event.motion.x, WINDOW_SIZE);
+                    mouse_pos.y = max(event.motion.y, WINDOW_SIZE);
 
                     break;
                 case SDL_MOUSEBUTTONDOWN:
@@ -121,13 +117,13 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
     
         // Todo: This is cursed and I'm going to fix it don't worry
         if (mouse_down) {
-            int cell_index = get_hovered_cell_index(&grid_cursor, grid_dimensions);
+            int cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->width);
             GridCell* grid_cell = &grid_cells[cell_index];
             grid_cell->is_open = true;
             sdl_poke_hole(renderer, &grid_cell->rect);
             SDL_RenderPresent(renderer);
 
-            if (!percolate_message_shown) {
+            if (!percolate_message_shown) { 
                 int is_top_row = is_index_top_row(cell_index, grid_dimensions->width);
                 int is_bottom_row = is_index_bottom_row(cell_index, grid_dimensions->width, grid_cell_count);
                 int is_left_col = cell_index % grid_dimensions->width == 0;
@@ -162,6 +158,7 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
 
                 // Todo: (if simple enough) highlight percolating area in blue
             }
+
         }
     }
 
