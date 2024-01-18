@@ -18,8 +18,11 @@ typedef struct {
     int y;
 } Coordinates;
 
-int max(int num, int max) {
-    return num > max ? max : num; 
+int clamp(int num, int min, int max) {
+    if (num > max) return max;
+    if (num < min) return min;
+
+    return num;
 }
 
 int get_hovered_cell_index(Coordinates* mouse_pos, int cell_size, int grid_virtual_size) {
@@ -113,8 +116,8 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_MOUSEMOTION:
-                    mouse_pos.x = max(event.motion.x, WINDOW_SIZE);
-                    mouse_pos.y = max(event.motion.y, WINDOW_SIZE);
+                    mouse_pos.x = clamp(event.motion.x, 0, WINDOW_SIZE);
+                    mouse_pos.y = clamp(event.motion.y, 0, WINDOW_SIZE);
 
                     break;
                 case SDL_MOUSEBUTTONDOWN:

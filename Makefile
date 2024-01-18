@@ -1,4 +1,4 @@
-GRID_SIZE = 15
+GRID_SIZE = 150
 
 TARGET = perco.exe
 CC = gcc
