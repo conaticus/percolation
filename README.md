@@ -25,4 +25,4 @@ If you are using Mingw on windows:
 
 ## Change Grid Size
 
-The executable takes in a grid width and height as arguments up to 200, you can change the arguments inside the Makefile, or just when running the executable file.
+The executable takes in a grid size (width and height are equal) as arguments up to 200, you can change the argument inside the Makefile, or just when running the executable file.

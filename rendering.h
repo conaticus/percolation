@@ -4,10 +4,8 @@
 #include <SDL2/SDl.h>
 #include <stdbool.h>
 
-// The width and height are virtual, and not actual pixel values.
 typedef struct {
-    int width;
-    int height;
+    int virtual_size;
     int cell_size;
 
     bool is_valid;

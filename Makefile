@@ -10,4 +10,4 @@ all:
 	$(CC) $(SRC) $(CLFAGS) $(LIBS) -o $(TARGET)
 
 run: 
-	./$(TARGET) $(GRID_SIZE) $(GRID_SIZE)
+	./$(TARGET) $(GRID_SIZE)
