@@ -7,13 +7,13 @@ This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Di
 <div style="display: flex;flex-direction:column;align-items: center;">
 
 <div>
-    <h2>User Mode</h2>
-    <img src="./screenshots/Percolation User.gif" alt="Percolation User Mode" style="width: 600px;" />
+    <h2>Random Mode</h2>
+    <img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 600px;" />
 </div>
 
 <div>
-    <h2>Random Mode</h2>
-    <img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 600px;" />
+    <h2>User Mode</h2>
+    <img src="./screenshots/Percolation User.gif" alt="Percolation User Mode" style="width: 600px;" />
 </div>
 
 </div>
