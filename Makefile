@@ -1,4 +1,7 @@
-GRID_SIZE = 15
+# user | random
+MODE = random
+RANDOM_INTERVAL_MILLIS = 1
+GRID_SIZE = 50
 
 TARGET = perco.exe
 CC = gcc
@@ -10,4 +13,4 @@ all:
 	$(CC) $(SRC) $(CLFAGS) $(LIBS) -o $(TARGET)
 
 run: 
-	./$(TARGET) $(GRID_SIZE)
+	./$(TARGET) $(MODE) $(RANDOM_INTERVAL_MILLIS) $(GRID_SIZE)

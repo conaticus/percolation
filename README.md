@@ -1,16 +1,33 @@
 # Percolation
 
-![Percolation Demo](./screenshots/Percolation.gif)
-
 ## What is this?
 
 This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) algorithm to check if the grid [Percolates](https://en.wikipedia.org/wiki/Percolation_theory). The program launches a GUI that allows you to poke holes in a grid, these holes will be represented as white cells. Once there is a pass through from the top to the bottom of the grid, the program will notify that the grid percolates. Diagonals do not count as a pass through.
 
-This was a challenge provided on Week 1 of Coursera's excellent [Algorithms Part 1](https://www.coursera.org/learn/algorithms-part1) course by Robert Sedgewick. This assignment was originally in Java, but I decided to make my own UI and implementation in C.
+<div style="display: flex;flex-direction:column;align-items: center;">
+
+<div>
+    <h2>User Mode</h2>
+    <img src="./screenshots/Percolation User.gif" alt="Percolation User Mode" style="width: 600px;" />
+</div>
+
+<div>
+    <h2>Random Mode</h2>
+    <img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 600px;" />
+</div>
+
+</div>
+
+## Usage
+
+User Mode: `bin user [grid size]`\
+Random Mode: `bin random [milliseconds interval] [grid size]`
+
+You can also change the parameters in the Makefile and call `make run`.
 
 ## Setup
 
-I have currently setup the configuration for my Windows Mingw environment. Feel free to play around to get this working for your system, and PRs are welcome!
+⚠ I have currently setup the configuration for my Windows Mingw environment. Feel free to play around to get this working for your system, and PRs are welcome!
 
 If you are using Mingw on windows:
 
@@ -22,7 +39,3 @@ If you are using Mingw on windows:
 - Copy the `SDL2.dll` file into the root of your project
 - Run `make` to build
 - Run `make run` to run the program
-
-## Change Grid Size
-
-The executable takes in a grid size (width and height are equal) as arguments up to 200, you can change the argument inside the Makefile, or just when running the executable file.

@@ -1,11 +1,28 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include "percolation.h"
 #include "rendering.h"
 
 #define BORDER_SIZE 1
 #define INVALID_CELL -1
+
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
+
+void sleep_ms(int milliseconds)
+{
+    #ifdef _WIN32
+        Sleep(milliseconds);
+    #else
+        usleep(milliseconds * 1000);
+    #endif
+}
 
 typedef struct {
     SDL_Rect rect;
@@ -42,7 +59,7 @@ bool is_connected(GridCell* grid_cells, int cid_a, int cid_b) {
     return get_root(grid_cells, cid_a) == get_root(grid_cells, cid_b);
 }
 
-void connect(GridCell* grid_cells, int cid_a, int cid_b) {
+void connect_nodes(GridCell* grid_cells, int cid_a, int cid_b) {
     int a_root_id = get_root(grid_cells, cid_a); 
     grid_cells[a_root_id].root = get_root(grid_cells, cid_b);
 }
@@ -86,10 +103,14 @@ void populate_disjoint_set(GridCell* grid_cells, int cell_count, int top_node_id
 
 void connect_neighbour(int neighbour_cell_index, int hovered_cell_index, GridCell* grid_cells) {
     if (neighbour_cell_index != INVALID_CELL && grid_cells[neighbour_cell_index].is_open)
-        connect(grid_cells, neighbour_cell_index, hovered_cell_index);
+        connect_nodes(grid_cells, neighbour_cell_index, hovered_cell_index);
 }
 
-void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
+void interval() {
+    printf("Interval!\n");
+}
+
+void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
     Coordinates mouse_pos = { .x=0, .y=0 };
 
     // Disjoint-set data structure
@@ -109,10 +130,14 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
     );
 
     bool mouse_down = false;
-    bool percolate_message_shown = false;
+    bool has_percolated = false;
+
+    // Initialise RNG
+    srand(time(0));
 
     while (true) {
         SDL_Event event;
+
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_MOUSEMOTION:
@@ -133,16 +158,22 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
                     break;
             }
         }
-    
-        if (!mouse_down) continue;
 
-        int cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->virtual_size);
+        int cell_index;
+        if (has_percolated) continue;
+
+        if (mode == Random) {
+            sleep_ms(random_interval_mills);
+            cell_index = rand() % grid_cell_count;
+        } else if (mode == User) {
+            if (!mouse_down) continue;
+            cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->virtual_size);
+        }
+
         GridCell* grid_cell = &grid_cells[cell_index];
         grid_cell->is_open = true;
         sdl_poke_hole(renderer, &grid_cell->rect);
         SDL_RenderPresent(renderer);
-
-        if (percolate_message_shown) continue; // No more calculations required after this (unless blue is added)
 
         // This pains me
         bool is_top_row = is_index_top_row(cell_index, grid_dimensions->virtual_size);
@@ -166,7 +197,7 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
         if (percolates) {
             sdl_messagebox_warning(window, "The grid now percolates.");
             SDL_RenderPresent(renderer);
-            percolate_message_shown = true;
+            has_percolated = true;
             mouse_down = false;
         }
     }
