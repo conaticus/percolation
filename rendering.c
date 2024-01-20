@@ -8,14 +8,12 @@ const int BORDER_SIZE = 1;
 // Theme
 const SDL_Color COLOR_WHITE = { 255, 255, 255, 255 };
 const SDL_Color COLOR_BLACK = { 0, 0, 0, 255 };
-const SDL_Color COLOR_BLUE = { 115, 169, 255, 255 };
 
 void sdl_setup_window(SDL_Window** window, SDL_Renderer** renderer) {
     // Todo: Failable
     SDL_Init(SDL_INIT_VIDEO);
 
-    // +1 allows room for the grid border lines
-    SDL_CreateWindowAndRenderer(WINDOW_SIZE + 1, WINDOW_SIZE + 1, 0, window, renderer);
+    SDL_CreateWindowAndRenderer(WINDOW_SIZE + BORDER_SIZE, WINDOW_SIZE + BORDER_SIZE, 0, window, renderer);
     SDL_SetWindowTitle(*window, "Percolation");
 
     if (window == NULL)

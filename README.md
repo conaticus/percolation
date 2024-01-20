@@ -1,6 +1,6 @@
 # Percolation
 
-**⚠ Warning:** This is a work in progress.
+![Percolation Demo](./screenshots/Percolation.gif)
 
 ## What is this?
 

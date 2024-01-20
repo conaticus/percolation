@@ -169,7 +169,5 @@ void run_simulation(GridDimensions* grid_dimensions, SDL_Window* window, SDL_Ren
             percolate_message_shown = true;
             mouse_down = false;
         }
-
-        // Todo: (if simple enough) highlight percolating area in blue
     }
 }
