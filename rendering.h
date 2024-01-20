@@ -1,7 +1,7 @@
 #ifndef RENDERING_H
 #define RENDERING_H
 
-#include <SDL2/SDl.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 
 typedef struct {
