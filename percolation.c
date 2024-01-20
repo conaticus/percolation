@@ -28,6 +28,7 @@ typedef struct {
     SDL_Rect rect;
     int root;
     bool is_open;
+    Color cell_color;
 } GridCell;
 
 typedef struct {
@@ -159,9 +160,11 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
             }
         }
 
-        int cell_index;
         if (has_percolated) continue;
 
+        int cell_index;
+
+        // Note: Doesn't check if the hole has already been poked as this would waste time complexity.
         if (mode == Random) {
             sleep_ms(random_interval_mills);
             cell_index = rand() % grid_cell_count;
@@ -172,8 +175,7 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
 
         GridCell* grid_cell = &grid_cells[cell_index];
         grid_cell->is_open = true;
-        sdl_poke_hole(renderer, &grid_cell->rect);
-        SDL_RenderPresent(renderer);
+
 
         // This pains me
         bool is_top_row = is_index_top_row(cell_index, grid_dimensions->virtual_size);
@@ -193,11 +195,27 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
         connect_neighbour(top_cell, cell_index, grid_cells);
         connect_neighbour(bottom_cell, cell_index, grid_cells);
 
-        bool percolates = is_connected(grid_cells, top_node_id, bottom_node_id);
-        if (percolates) {
+        Color hole_color = is_connected(grid_cells, cell_index, top_node_id) ? Blue : White;
+        grid_cell->cell_color = hole_color;
+        sdl_poke_hole(renderer, &grid_cell->rect, hole_color);
+
+        // Color percolating elements
+        // Yucky time complexity, but there isn't really a choice
+        for (int i = 0; i < grid_cell_count; i++) {
+            GridCell* grid_cell = &grid_cells[i];
+            if (grid_cell->cell_color == Blue) continue;
+
+            if (is_connected(grid_cells, i, top_node_id) && grid_cell->is_open) {
+                sdl_poke_hole(renderer, &grid_cell->rect, Blue);
+                grid_cell->cell_color = Blue;
+            }
+        }
+
+        SDL_RenderPresent(renderer);
+
+        has_percolated = is_connected(grid_cells, top_node_id, bottom_node_id);
+        if (has_percolated) {
             sdl_messagebox_warning(window, "The grid now percolates.");
-            SDL_RenderPresent(renderer);
-            has_percolated = true;
             mouse_down = false;
         }
     }

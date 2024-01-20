@@ -31,8 +31,14 @@ void sdl_set_color_black(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, COLOR_BLACK.r, COLOR_BLACK.g, COLOR_BLACK.b, COLOR_BLACK.a);
 }
 
-void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect) {
-    sdl_set_color_white(renderer);
+void sdl_set_color_blue(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 66, 203, 245, 255);
+}
+
+void sdl_poke_hole(SDL_Renderer* renderer, SDL_Rect* rect, Color color) {
+    if (color == White) sdl_set_color_white(renderer);
+    else sdl_set_color_blue(renderer);
+
     SDL_RenderFillRect(renderer, rect);
 }
 

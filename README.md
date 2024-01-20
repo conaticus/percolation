@@ -4,19 +4,11 @@
 
 This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) algorithm to check if the grid [Percolates](https://en.wikipedia.org/wiki/Percolation_theory). The program launches a GUI that allows you to poke holes in a grid, these holes will be represented as white cells. Once there is a pass through from the top to the bottom of the grid, the program will notify that the grid percolates. Diagonals do not count as a pass through.
 
-<div style="display: flex;flex-direction:column;align-items: center;">
+<h2>Random Mode</h2>
+<img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 400px;" />
 
-<div>
-    <h2>Random Mode</h2>
-    <img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 600px;" />
-</div>
-
-<div>
-    <h2>User Mode</h2>
-    <img src="./screenshots/Percolation User.gif" alt="Percolation User Mode" style="width: 600px;" />
-</div>
-
-</div>
+<h2>User Mode</h2>
+<img src="./screenshots/Percolation User.gif" alt="Percolation User Mode" style="width: 400px;" />
 
 ## Usage
 
