@@ -33,7 +33,7 @@ void get_args(int argc, char* argv[], int* random_interval, Mode* mode, GridDime
     grid_dimensions->virtual_size = strtol(argv[next_arg_id], NULL, 10);
 
     if (grid_dimensions->virtual_size > 200)
-        printf("[WARNING]: Grid sizes above 200 may not be renderered correctly, you can fix this by changing the window size in rendering.c\n");
+        printf("[WARNING]: Grid sizes above 100 may not be renderered correctly. PRs are welcome, however!\n");
 
     grid_dimensions->cell_size = (WINDOW_SIZE / grid_dimensions->virtual_size);
     grid_dimensions->is_valid = true;

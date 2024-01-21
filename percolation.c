@@ -184,11 +184,12 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
         int cell_index;
 
         if (mode == Random) {
-            cell_index = rand() % grid_cell_count;
             while (grid_cells[cell_index].is_open)
                 cell_index = rand() % grid_cell_count;
 
-            sleep_ms(random_interval_mills);
+            if (random_interval_mills > 0) {
+               sleep_ms(random_interval_mills); 
+            }
         } else if (mode == User) {
             if (!mouse_down) continue;
             cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->virtual_size);

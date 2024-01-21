@@ -1,5 +1,5 @@
 # user | random
-MODE = random
+MODE = user
 # Can be set to zero for a raw performance test
 RANDOM_INTERVAL_MILLIS = 0
 GRID_SIZE = 100
