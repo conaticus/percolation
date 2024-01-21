@@ -4,6 +4,8 @@
 
 This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) algorithm to check if the grid [Percolates](https://en.wikipedia.org/wiki/Percolation_theory). The program launches a GUI that allows you to poke holes in a grid, these holes will be represented as white cells. Once there is a pass through from the top to the bottom of the grid, the program will notify that the grid percolates. Diagonals do not count as a pass through.
 
+I used both flattening and weighting techniques to make both `connect()` and `is_connected()` operations extremely efficient, even with millions of cells in the grid. Unfortunately this is bottlenecked by the `rand()` operations and SDL rendering, however if you wish to try and fix this, feel free!
+
 <h2>Random Mode</h2>
 <img src="./screenshots/Percolation Random.gif" alt="Percolation User Mode" style="width: 400px;" />
 
