@@ -51,8 +51,13 @@ int get_hovered_cell_index(Coordinates* mouse_pos, int cell_size, int grid_virtu
 }
 
 int get_root(GridCell* grid_cells, int cid) {
-    while (cid != grid_cells[cid].root)
-        cid = grid_cells[cid].root;
+    while (cid != grid_cells[cid].root) {
+        // Flatten the tree for much faster searching
+        GridCell* root_cell = &grid_cells[cid];
+        root_cell->root = grid_cells[root_cell->root].root;
+
+        cid = root_cell->root;
+    }
 
     return cid;
 }
@@ -70,7 +75,7 @@ void connect_nodes(GridCell* grid_cells, int cid_a, int cid_b) {
     GridCell* a_root_cell = &grid_cells[a_root];
     GridCell* b_root_cell = &grid_cells[b_root];
 
-    // Place larger tree above smaller tree
+    // Place larger tree above smaller tree for faster searching
     if (a_root_cell->size > b_root_cell->size) {
         b_root_cell->root = a_root_cell->root;
         a_root_cell->size += b_root_cell->size;
