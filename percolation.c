@@ -129,6 +129,11 @@ void connect_neighbour(int neighbour_cell_index, int hovered_cell_index, GridCel
         connect_nodes(grid_cells, neighbour_cell_index, hovered_cell_index);
 }
 
+// This is neccesary because grids above size 100 are going to exceed RAND_MAX
+int large_rand() {
+    return (rand() * RAND_MAX + rand());
+}
+
 void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
     Coordinates mouse_pos = { .x=0, .y=0 };
 
@@ -148,6 +153,7 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
         bottom_node_id,
         grid_dimensions
     );
+
 
     bool mouse_down = false;
     bool has_percolated = false;
@@ -183,21 +189,25 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
 
         int cell_index;
 
-        if (mode == Random) {
-            while (grid_cells[cell_index].is_open)
-                cell_index = rand() % grid_cell_count;
+        switch(mode) {
+            case Random:
+                cell_index = large_rand() % grid_cell_count;
+                while (grid_cells[cell_index].is_open) {
+                    cell_index = large_rand() % grid_cell_count;
+                }
 
-            if (random_interval_mills > 0) {
-               sleep_ms(random_interval_mills); 
-            }
-        } else if (mode == User) {
-            if (!mouse_down) continue;
-            cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->virtual_size);
+                if (random_interval_mills > 0)
+                    sleep_ms(random_interval_mills);
+
+                break;
+            case User:
+                if (!mouse_down) continue;
+                cell_index = get_hovered_cell_index(&mouse_pos, grid_dimensions->cell_size, grid_dimensions->virtual_size);
+                break;
         }
-
+        
         GridCell* grid_cell = &grid_cells[cell_index];
         grid_cell->is_open = true;
-
 
         // This pains me
         bool is_top_row = is_index_top_row(cell_index, grid_dimensions->virtual_size);
@@ -221,7 +231,7 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
         grid_cell->cell_color = hole_color;
         sdl_poke_hole(renderer, &grid_cell->rect, hole_color);
 
-        // Color percolating elements
+        // Color percolating cells
         // Yucky time complexity, but there isn't really a choice
         for (int i = 0; i < grid_cell_count; i++) {
             GridCell* grid_cell = &grid_cells[i];

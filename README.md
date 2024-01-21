@@ -12,10 +12,12 @@ This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Di
 
 ## Usage
 
+⚠ Warning: The grid size cannot be above 1/2 of the window size, otherwise the grid will not render. If you wish to test a larger grid, please increase the window size to at least 2x the desired grid size in the rendering.c file.
+
 User Mode: `bin user [grid size]`\
 Random Mode: `bin random [milliseconds interval] [grid size]`
 
-The `milliseconds interval` can be set to zero for a raw performance test.
+The `milliseconds interval` can be set to zero fastest possible simulation.
 You can also change the parameters in the Makefile and call `make run`.
 
 ## Setup
