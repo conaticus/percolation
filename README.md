@@ -15,6 +15,7 @@ This is an implementation of the [Disjoint-set](https://en.wikipedia.org/wiki/Di
 User Mode: `bin user [grid size]`\
 Random Mode: `bin random [milliseconds interval] [grid size]`
 
+The `milliseconds interval` can be set to zero for a raw performance test.
 You can also change the parameters in the Makefile and call `make run`.
 
 ## Setup
