@@ -1,7 +1,7 @@
 # user | random
-MODE = user
+MODE = random
 RANDOM_INTERVAL_MILLIS = 1
-GRID_SIZE = 15
+GRID_SIZE = 100
 
 ifeq ($(MODE), random)
 	EXEC_ARGS = $(MODE) $(RANDOM_INTERVAL_MILLIS) $(GRID_SIZE)
