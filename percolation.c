@@ -27,6 +27,7 @@ void sleep_ms(int milliseconds)
 typedef struct {
     SDL_Rect rect;
     int root;
+    int size;
     bool is_open;
     Color cell_color;
 } GridCell;
@@ -61,8 +62,23 @@ bool is_connected(GridCell* grid_cells, int cid_a, int cid_b) {
 }
 
 void connect_nodes(GridCell* grid_cells, int cid_a, int cid_b) {
-    int a_root_id = get_root(grid_cells, cid_a); 
-    grid_cells[a_root_id].root = get_root(grid_cells, cid_b);
+    int a_root = get_root(grid_cells, cid_a);
+    int b_root = get_root(grid_cells, cid_b);
+
+    if (a_root == b_root) return;
+
+    GridCell* a_root_cell = &grid_cells[a_root];
+    GridCell* b_root_cell = &grid_cells[b_root];
+
+    // Place larger tree above smaller tree
+    if (a_root_cell->size > b_root_cell->size) {
+        b_root_cell->root = a_root_cell->root;
+        a_root_cell->size += b_root_cell->size;
+        return;
+    }
+
+    a_root_cell->root = b_root_cell->root;
+    b_root_cell->size += a_root_cell->size;
 }
 
 bool is_index_top_row(int index, int grid_width) {
@@ -94,6 +110,7 @@ void populate_disjoint_set(GridCell* grid_cells, int cell_count, int top_node_id
            .h = grid_dimensions->cell_size - BORDER_SIZE
         };
 
+        grid_cell.size = 1;
         grid_cells[i] = grid_cell;
     }
 
@@ -107,10 +124,6 @@ void connect_neighbour(int neighbour_cell_index, int hovered_cell_index, GridCel
         connect_nodes(grid_cells, neighbour_cell_index, hovered_cell_index);
 }
 
-void interval() {
-    printf("Interval!\n");
-}
-
 void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_dimensions, SDL_Window* window, SDL_Renderer* renderer) {
     Coordinates mouse_pos = { .x=0, .y=0 };
 
@@ -119,6 +132,7 @@ void run_simulation(Mode mode, int random_interval_mills, GridDimensions* grid_d
 
     // The last two elements are the virtual nodes at the top and bottom of the disjoint-set tree
     GridCell* grid_cells = malloc((grid_cell_count + 2) * sizeof(GridCell));
+
     int top_node_id = grid_cell_count;
     int bottom_node_id = grid_cell_count + 1;
 
